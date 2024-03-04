@@ -30,8 +30,8 @@
             default: ''
         },{
             key: 'markEnable',
-            title: '启用标记',
-            desc: '勾选来启动自动标记',
+            title: '启用自动标记',
+            desc: '勾选来启动自动标记（不用记得关）',
             default: false
         }],
         preProcFunc() {
