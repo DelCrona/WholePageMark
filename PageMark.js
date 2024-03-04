@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NGA优化摸鱼体验插件-标记整页（封测版）
 // @namespace    https://github.com/DelCrona/WholePageMark
-// @version      0.0.1
+// @version      0.0.2
 // @author       DelCrona
 // @description  一键（划掉）自动标记整页用户
 // @license      MIT
