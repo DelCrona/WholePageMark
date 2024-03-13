@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         NGA优化摸鱼体验插件-标记整页（封测版）
+// @name         NGA优化摸鱼体验插件-标记整页
 // @namespace    https://github.com/DelCrona/WholePageMark
 // @version      0.0.3
 // @author       DelCrona
