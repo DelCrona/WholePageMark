@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NGA优化摸鱼体验插件-标记整页
 // @namespace    https://github.com/DelCrona/WholePageMark
-// @version      0.0.3
+// @version      0.0.4
 // @author       DelCrona
 // @description  一键（划掉）自动标记整页用户
 // @license      MIT
@@ -22,7 +22,7 @@
         desc: '一键对整页用户上标记,点击右边设置按钮使用',  // 插件说明
         settings: [{
             key: 'tips',
-            title: '非常重要的提示：1.使用之前先备份你的摸鱼本体配置文件和标记列表 2.不用的时候一定要取消勾选或者关闭插件，否则看到哪标到哪。 3.出bug的话可以反馈，修不一定，作者第二天学JS。'
+            title: '非常重要的提示：1.使用之前先备份你的摸鱼本体配置文件和标记列表 2.不用的时候一定要取消勾选或者关闭插件，否则看到哪标到哪。 3.出bug的话可以去github反馈'
         },{
             key: 'markEnable',
             title: '启用自动标记',
@@ -31,7 +31,7 @@
         },{
             key: 'anonyEnable',
             title: '启用标记匿名',
-            desc: '勾选标记匿名，不勾选就不标',
+            desc: '勾选标记匿名，不勾选就不标 P.S：匿名用户为共用UID，标记无法破匿名，可按需勾选',
             default: false
         },{
             key: 'markInput',
