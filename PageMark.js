@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NGA优化摸鱼体验插件-标记整页
 // @namespace    https://github.com/DelCrona/WholePageMark
-// @version      0.0.5
+// @version      0.0.6
 // @author       DelCrona
 // @description  一键（划掉）自动标记整页用户
 // @license      MIT
@@ -39,6 +39,9 @@
             desc: '在此处填写，不宜过长，我不知道会不会有bug',
             default: ''
         }],
+        preProcFunc() {
+            // console.log('已运行: preProcFunc()')
+        },
         initFunc() {
             const $ = this.mainScript.libs.$;
 
@@ -49,6 +52,13 @@
             console.log('主脚本: ', this.mainScript)
             console.log('主脚本引用库: ', this.mainScript.libs) */
 
+        },
+        postProcFunc() {
+            //console.log('已运行: postProcFunc()')
+        },
+        renderThreadsFunc($el) {
+            //console.log('列表项 (JQuery) => ', $el)
+            //console.log('列表项 (JS) => ', $el.get(0))
         },
         // 主管贴内回复的函数，每检测到一个回复楼层运行一次
         renderFormsFunc($el) {
@@ -115,6 +125,12 @@
             }catch(e){
                 console.log(e);
             }
+        },
+        renderAlwaysFunc() {
+            // console.log('循环运行: renderAlwaysFunc()')
+        },
+        asyncStyle() {
+            return `#ngascript_plugin_${this.pluginID} {color: red}`
         },
         style: `
         #ngascript_plugin_test {color: red}
