@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NGA优化摸鱼体验插件-标记整页
 // @namespace    https://github.com/DelCrona/WholePageMark
-// @version      0.0.4
+// @version      0.0.5
 // @author       DelCrona
 // @description  一键（划掉）自动标记整页用户
 // @license      MIT
@@ -39,53 +39,47 @@
             desc: '在此处填写，不宜过长，我不知道会不会有bug',
             default: ''
         }],
-        preProcFunc() {
-            // console.log('已运行: preProcFunc()')
-        },
         initFunc() {
-            const $ = this.mainScript.libs.$
-            console.log($.trim(' '))
+            const $ = this.mainScript.libs.$;
+
+            /* console.log($.trim(' '))
             console.log('已运行: 标记整页')
             console.log('插件ID: ', this.pluginID)
             console.log('插件配置: ', this.pluginSettings)
             console.log('主脚本: ', this.mainScript)
-            console.log('主脚本引用库: ', this.mainScript.libs)
-        },
-        postProcFunc() {
-            // console.log('已运行: postProcFunc()')
+            console.log('主脚本引用库: ', this.mainScript.libs) */
+
         },
         // 主管贴内回复的函数，每检测到一个回复楼层运行一次
         renderFormsFunc($el) {
-            // console.log('回复项 (JQuery) => ', $el)
-            // console.log('回复项 (JS) => ', $el.get(0))
-            // console.log(currentUid);
+
+            /* 
+            console.log('回复项 (JQuery) => ', $el)
+            console.log('回复项 (JS) => ', $el.get(0))
+            console.log(currentUid); 
+            */
+
             const currentUid = $el.find('[name=uid]').text() + '' ; // 获取uid，具体什么方式是复制的本体，能用就行。
             // 判断是否勾选启动按钮和是否标记匿名
-            if (!this.pluginSettings['markEnable']){    
-                console.log("未勾选启动标记，直接return");
+            if (!this.pluginSettings['markEnable'] || (!this.pluginSettings['anonyEnable'] && parseInt(currentUid) < 0)){    
+                console.log("未勾选启动标记或未开启标记匿名且本楼匿名，直接return");
                 return;
-            }else if(!this.pluginSettings['anonyEnable']){
-                if(parseInt(currentUid) < 0){
-                    console.log("未勾选标记匿名，直接return");
-                    return;
-                }
             }
-            var markArray;
-            const preMark = this.pluginSettings['markInput']; // 获取设置内自己填写的标记（准备标记）
+            // const preMark = this.pluginSettings['markInput']; // 获取设置内自己填写的标记（准备标记）
             // console.log(preMark+"(premark)");
-            const userObj = ({uid: currentUid}); // 创建一个对象，属性是uid，刚获取到的，用来接收标签Array数组。
-            // 获取标签对象用来比较重复标记，如果获取的对象为空那么可以直接标记
-            // 有标记的话会比较对象里的marks然后比较，没重复的就标，有重复的就直接return结束
-            // try用来抓报错
+            // const userObj = ({uid: currentUid}); // 创建一个对象，属性是uid，刚获取到的，用来接收标签Array数组。
+            /* 获取标签对象用来比较重复标记，如果获取的对象为空那么可以直接标记
+               有标记的话会比较对象里的marks然后比较，没重复的就标，有重复的就直接return结束
+               try用来抓报错 */
             try{
-                markArray = this.mainScript.getModule('MarkAndBan').getUserMarks(userObj);
+                var markArray = this.mainScript.getModule('MarkAndBan').getUserMarks({uid: currentUid});
                 // 判断是否为空
-                if (markArray === null){
+                if (!markArray){
                     // 空的直接标
                     // console.log("没被标记过，可以直接标");
                     // 定义标记对象
                     let markObj = {
-                        marks: [{mark: preMark, text_color: '#ffffff', bg_color: '#1f72f1'}],
+                        marks: [{mark: this.pluginSettings['markInput'], text_color: '#ffffff', bg_color: '#1f72f1'}],
                         name: '',
                         uid: currentUid
                     }
@@ -94,8 +88,7 @@
                 }else{
                     // console.log(markArray.marks[0].mark);
                     // 使用find函数找重复，有的话if判断为true接return
-                    if(markArray.marks.find((element) => {return preMark === element.mark;}))
-                    {
+                    if(markArray.marks.find((element) => {return this.pluginSettings['markInput'] === element.mark;})){
                         console.log("有重复，无需标记");
                         return;
                     }
@@ -110,24 +103,18 @@
                     }
                     */
 
-                    console.log("没重复，添加标记"); 
+                    // console.log("没重复，添加标记"); 
                     // 没有重复那么直接标记
-                    let markList = markArray.marks; // 接收标记数组
-                    markList.push({mark: preMark, text_color: '#ffffff', bg_color: '#1f72f1'}); // 在末尾插入标记
+                    // let markList = markArray.marks; // 接收标记数组
+                    markArray.marks.push({mark: this.pluginSettings['markInput'], text_color: '#ffffff', bg_color: '#1f72f1'}); // 在末尾插入标记
                     // 写明标记对象并调用标记函数
-                    let markObj = {marks: markList, name: '', uid: currentUid};
-                    this.mainScript.getModule('MarkAndBan').setUserMarks(markObj);
+                    // let markObj = {marks: markArray.marks, name: '', uid: currentUid};
+                    this.mainScript.getModule('MarkAndBan').setUserMarks({marks: markArray.marks, name: '', uid: currentUid});
                     console.log("有标记者标记成功");
                 }
             }catch(e){
                 console.log(e);
             }
-        },
-        renderAlwaysFunc() {
-            // console.log('循环运行: renderAlwaysFunc()')
-        },
-        asyncStyle() {
-            return `#ngascript_plugin_${this.pluginID} {color: red}`
         },
         style: `
         #ngascript_plugin_test {color: red}
