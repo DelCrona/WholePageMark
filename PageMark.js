@@ -12,6 +12,8 @@
 // @grant        unsafeWindow
 // @run-at       document-start
 // @inject-into  content
+// @downloadURL https://update.greasyfork.org/scripts/489007/NGA%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C%E6%8F%92%E4%BB%B6-%E6%A0%87%E8%AE%B0%E6%95%B4%E9%A1%B5.user.js
+// @updateURL https://update.greasyfork.org/scripts/489007/NGA%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C%E6%8F%92%E4%BB%B6-%E6%A0%87%E8%AE%B0%E6%95%B4%E9%A1%B5.meta.js
 // ==/UserScript==
 
 (function (registerPlugin) {
@@ -38,6 +40,11 @@
             title: '输入你要挂的标记',
             desc: '在此处填写，不宜过长，我不知道会不会有bug',
             default: ''
+        },{
+            key: 'markColor',
+            title: '标记颜色',
+            desc: '默认蓝色',
+            default: '#1f72f1'
         }],
         preProcFunc() {
             // console.log('已运行: preProcFunc()')
@@ -52,6 +59,9 @@
             console.log('主脚本: ', this.mainScript)
             console.log('主脚本引用库: ', this.mainScript.libs) */
 
+            // 调用标准模块authorMark初始化颜色选择器
+            this.mainScript.getModule('AuthorMark').initSpectrum(`[plugin-id="${this.pluginID}"][plugin-setting-key="markColor"]`)
+
         },
         postProcFunc() {
             //console.log('已运行: postProcFunc()')
@@ -63,15 +73,15 @@
         // 主管贴内回复的函数，每检测到一个回复楼层运行一次
         renderFormsFunc($el) {
 
-            /* 
+            /*
             console.log('回复项 (JQuery) => ', $el)
             console.log('回复项 (JS) => ', $el.get(0))
-            console.log(currentUid); 
+            console.log(currentUid);
             */
 
             const currentUid = $el.find('[name=uid]').text() + '' ; // 获取uid，具体什么方式是复制的本体，能用就行。
             // 判断是否勾选启动按钮和是否标记匿名
-            if (!this.pluginSettings['markEnable'] || (!this.pluginSettings['anonyEnable'] && parseInt(currentUid) < 0)){    
+            if (!this.pluginSettings['markEnable'] || (!this.pluginSettings['anonyEnable'] && parseInt(currentUid) < 0)){
                 console.log("未勾选启动标记或未开启标记匿名且本楼匿名，直接return");
                 return;
             }
@@ -89,7 +99,7 @@
                     // console.log("没被标记过，可以直接标");
                     // 定义标记对象
                     let markObj = {
-                        marks: [{mark: this.pluginSettings['markInput'], text_color: '#ffffff', bg_color: '#1f72f1'}],
+                        marks: [{mark: this.pluginSettings['markInput'], text_color: '#ffffff', bg_color: this.pluginSettings['markColor']}],
                         name: '',
                         uid: currentUid
                     }
@@ -113,7 +123,7 @@
                     }
                     */
 
-                    // console.log("没重复，添加标记"); 
+                    // console.log("没重复，添加标记");
                     // 没有重复那么直接标记
                     // let markList = markArray.marks; // 接收标记数组
                     markArray.marks.push({mark: this.pluginSettings['markInput'], text_color: '#ffffff', bg_color: '#1f72f1'}); // 在末尾插入标记
